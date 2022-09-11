@@ -8,10 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <com.lovepreet.gallery.ui.customUi.ZoomImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/imageView"
+            android:scaleType="matrix"
             android:contentDescription="@string/sliderimage"
             />
 

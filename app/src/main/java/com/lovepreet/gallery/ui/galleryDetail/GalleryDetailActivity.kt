@@ -1,6 +1,7 @@
 package com.lovepreet.gallery.ui.galleryDetail
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -37,14 +38,26 @@ class GalleryDetailActivity : AppCompatActivity() {
         binding.back.setOnClickListener {
             onBackPressed()
         }
-
         handleViewPager()
     }
 
     private fun handleViewPager(){
         currentItemPosition = intent.getIntExtra(INDEX, 0)
         val imageList: ArrayList<ImageModel> = intent.getParcelableArrayListExtra(IMAGE_LIST) ?: ArrayList()
-        val imagesAdapter = ImagesSliderViewerAdapter(viewModel.picasso, imageList)
+        val imagesAdapter = ImagesSliderViewerAdapter(
+            this, viewModel.picasso, imageList,
+            object: ImagesSliderViewerAdapter.ImageSliderInterface{
+                override fun disableSwipe() {
+                    binding.toolbar.visibility = View.GONE
+                    binding.desc.visibility = View.GONE
+                    binding.imageViewPager.isUserInputEnabled = false
+                }
+                override fun enableSwipe() {
+                    binding.toolbar.visibility = View.VISIBLE
+                    binding.desc.visibility = View.VISIBLE
+                    binding.imageViewPager.isUserInputEnabled = true
+                }
+            })
         binding.imageViewPager.offscreenPageLimit = 6
         binding.imageViewPager.adapter = imagesAdapter
 
