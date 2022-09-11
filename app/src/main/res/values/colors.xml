@@ -10,4 +10,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="whiteTransparent">#80FFFFFF</color>
     <color name="mdtp_accent_color_focused">#76ffffff</color>
+    <color name="splashBg">#702A7C</color>
 </resources>

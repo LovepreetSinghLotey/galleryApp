@@ -12,6 +12,9 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/black</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowSplashScreenBackground">@color/splashBg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@mipmap/ic_gallery_round</item>
+        <item name="android:windowSplashScreenAnimationDuration">400</item>
     </style>
 
     <style name="CustomDialogAnimation">
