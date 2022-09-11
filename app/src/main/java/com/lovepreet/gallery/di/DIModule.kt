@@ -24,7 +24,7 @@ object DIModule {
     @Provides
     fun providePicasso(@ApplicationContext context: Context): Picasso {
         return Picasso.Builder(context)
-            .indicatorsEnabled(true)
+            .indicatorsEnabled(false)
             .loggingEnabled(true)
             .listener { _, _, exception -> exception.printStackTrace() }
             .build()

@@ -8,10 +8,10 @@ import java.util.*
  * Created by Lovepreet Singh on 10/09/22.
  */
 
-const val serverDateFormat: String = "yyyy-MM-dd HH:mm:ss"
+const val dateFormat: String = "yyyy-MM-dd"
 
 fun String.toDate(): Date{
-    val formatStart = SimpleDateFormat(serverDateFormat, Locale.getDefault())
+    val formatStart = SimpleDateFormat(dateFormat, Locale.getDefault())
     try {
         val d = formatStart.parse(this)
         val calendar = Calendar.getInstance()

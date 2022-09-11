@@ -2,7 +2,9 @@ package com.lovepreet.gallery.ui.gallery.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.lovepreet.gallery.R
@@ -18,7 +20,7 @@ import com.squareup.picasso.Picasso
 class GalleryImageAdapter(private var picasso: Picasso)
     : RecyclerView.Adapter<GalleryImageAdapter.ViewHolder>() {
 
-    private val images: ArrayList<ImageModel> = ArrayList()
+    val images: ArrayList<ImageModel> = ArrayList()
     var delegate: OnImageClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,9 +37,11 @@ class GalleryImageAdapter(private var picasso: Picasso)
             .error(R.drawable.no_image_available_dark)
             .into(holder.binding.imageView)
 
+        holder.binding.title.text = images[position].title
+
         BounceView.addAnimTo(holder.binding.root)
         holder.binding.root.setOnClickListener{
-            delegate?.onImageTapped(images[position])
+            delegate?.onImageTapped(position, holder.binding.root)
         }
     }
 
@@ -62,6 +66,6 @@ class GalleryImageAdapter(private var picasso: Picasso)
         : RecyclerView.ViewHolder(binding.root)
 
     interface OnImageClickListener{
-        fun onImageTapped(image: ImageModel)
+        fun onImageTapped(index: Int, view: View)
     }
 }

@@ -4,10 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable-v24/no_image_available_dark.xml" value="0.146" />
-        <entry key="app/src/main/res/layout/activity_gallery.xml" value="0.22870370370370371" />
-        <entry key="app/src/main/res/layout/activity_gallery_detail.xml" value="0.27314814814814814" />
+        <entry key="app/src/main/res/drawable/ic_back_icon.xml" value="0.1545" />
+        <entry key="app/src/main/res/layout/activity_gallery.xml" value="0.10121457489878542" />
+        <entry key="app/src/main/res/layout/activity_gallery_detail.xml" value="0.18425925925925926" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.22962962962962963" />
         <entry key="app/src/main/res/layout/item_gallery.xml" value="0.29322916666666665" />
+        <entry key="app/src/main/res/layout/item_image_slider_viewer.xml" value="0.24537037037037038" />
       </map>
     </option>
   </component>

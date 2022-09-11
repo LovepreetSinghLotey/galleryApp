@@ -12,6 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/black"
         tools:context=".ui.gallery.GalleryActivity">
 
         <ScrollView
@@ -30,7 +31,7 @@
                     android:layout_marginTop="12dp"
                     android:fontFamily="monospace"
                     android:text="@string/gallery"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textSize="30sp"
                     android:textStyle="bold" />
 

@@ -1,15 +1,18 @@
 package com.lovepreet.gallery.ui.gallery
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.lovepreet.gallery.R
 import com.lovepreet.gallery.dataSource.Error
 import com.lovepreet.gallery.databinding.ActivityGalleryBinding
+import com.lovepreet.gallery.extensions.fadeTransition
 import com.lovepreet.gallery.extensions.showSnackbar
-import com.lovepreet.gallery.models.ImageModel
 import com.lovepreet.gallery.ui.gallery.adapter.GalleryImageAdapter
+import com.lovepreet.gallery.ui.galleryDetail.GalleryDetailActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -30,8 +33,11 @@ class GalleryActivity : AppCompatActivity() {
 
     private fun handleGui(){
         viewModel.adapter.delegate = object: GalleryImageAdapter.OnImageClickListener{
-            override fun onImageTapped(image: ImageModel) {
-                //open image in detail with adapter
+            override fun onImageTapped(index: Int, view: View) {
+                startActivity(Intent(this@GalleryActivity, GalleryDetailActivity::class.java)
+                    .putExtra(GalleryDetailActivity.INDEX, index)
+                    .putParcelableArrayListExtra(GalleryDetailActivity.IMAGE_LIST, viewModel.adapter.images))
+                fadeTransition()
             }
         }
 

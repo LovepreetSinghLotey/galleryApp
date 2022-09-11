@@ -3,4 +3,6 @@
     <string name="gallery">Gallery</string>
     <string name="imagethumb">imageThumb</string>
     <string name="image">image</string>
+    <string name="sliderimage">sliderImage</string>
+    <string name="backbutton">backButton</string>
 </resources>
