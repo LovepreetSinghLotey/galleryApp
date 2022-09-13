@@ -25,8 +25,11 @@ class GalleryViewModel @Inject constructor(
 ): ViewModel() {
 
     val imageListObserver: MutableLiveData<ResourceState> = MutableLiveData()
-
     val adapter = GalleryImageAdapter(picasso)
+
+    init {
+        loadImagesInGallery()
+    }
 
     fun loadImagesInGallery(){
         viewModelScope.launch(Dispatchers.Main) {

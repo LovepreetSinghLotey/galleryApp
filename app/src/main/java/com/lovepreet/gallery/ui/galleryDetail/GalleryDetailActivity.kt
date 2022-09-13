@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.viewpager2.widget.ViewPager2
+import com.google.gson.reflect.TypeToken
 import com.lovepreet.gallery.R
 import com.lovepreet.gallery.databinding.ActivityGalleryDetailBinding
 import com.lovepreet.gallery.extensions.fadeTransition

@@ -73,7 +73,7 @@ class ZoomImageView: AppCompatImageView, View.OnTouchListener,
             return true
         }
 
-        override fun onScaleEnd(detector: ScaleGestureDetector?) {
+        override fun onScaleEnd(detector: ScaleGestureDetector) {
             Log.d("scaling", "scale end $imageZoomObserver.value")
         }
 

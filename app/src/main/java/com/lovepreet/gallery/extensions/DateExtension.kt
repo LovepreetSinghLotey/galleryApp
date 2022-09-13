@@ -16,7 +16,9 @@ fun String.toDate(): Date{
         val d = formatStart.parse(this)
         val calendar = Calendar.getInstance()
         calendar.timeZone = TimeZone.getDefault()
-        calendar.time = d
+        if (d != null) {
+            calendar.time = d
+        }
         return calendar.time
     }
     catch (e: ParseException) {

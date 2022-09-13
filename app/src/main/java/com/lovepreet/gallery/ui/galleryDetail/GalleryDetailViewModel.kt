@@ -13,5 +13,4 @@ import javax.inject.Inject
 @HiltViewModel
 class GalleryDetailViewModel @Inject constructor(
     var picasso: Picasso
-): ViewModel() {
-}
+): ViewModel()

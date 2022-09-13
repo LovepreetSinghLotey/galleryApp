@@ -1,217 +1,216 @@
-package com.lovepreet.gallery.ui.customUi.readMoreTextView;
+package com.lovepreet.gallery.ui.customUi.readMoreTextView
+
+import android.annotation.SuppressLint
+import android.content.Context
+import kotlin.jvm.JvmOverloads
+import android.widget.TextView
+import android.widget.TextView.BufferType
+import com.lovepreet.gallery.ui.customUi.readMoreTextView.ReadMoreTextView.ReadMoreClickableSpan
+import android.text.method.LinkMovementMethod
+import com.lovepreet.gallery.ui.customUi.readMoreTextView.ReadMoreTextView
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ClickableSpan
+import android.text.TextPaint
+import android.view.ViewTreeObserver.OnGlobalLayoutListener
+import android.view.ViewTreeObserver
+import android.os.Build
+import android.content.res.TypedArray
+import android.graphics.Color
+import android.util.AttributeSet
+import android.view.View
+import com.lovepreet.gallery.R
+import androidx.core.content.ContextCompat
+import java.lang.Exception
 
 /**
  * Created by Lovepreet Singh on 11/09/22.
  */
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.Color;
-import android.os.Build;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.TextView;
-
-import androidx.core.content.ContextCompat;
-
-import com.lovepreet.gallery.R;
-
-
 @SuppressLint("AppCompatCustomView")
-public class ReadMoreTextView extends TextView {
+class ReadMoreTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+    TextView(context, attrs) {
 
-    private static final int TRIM_MODE_LINES = 0;
-    private static final int TRIM_MODE_LENGTH = 1;
-    private static final int DEFAULT_TRIM_LENGTH = 240;
-    private static final int DEFAULT_TRIM_LINES = 2;
-    private static final int INVALID_END_INDEX = -1;
-    private static final boolean DEFAULT_SHOW_TRIM_EXPANDED_TEXT = true;
-    private static final String ELLIPSIZE = "... ";
-
-    private CharSequence text;
-    private BufferType bufferType;
-    private boolean readMore = true;
-    private int trimLength;
-    private CharSequence trimCollapsedText;
-    private CharSequence trimExpandedText;
-    private ReadMoreClickableSpan viewMoreSpan;
-    private int colorClickableText;
-    private boolean showTrimExpandedText;
-
-    private int trimMode;
-    private int lineEndIndex;
-    private int trimLines;
-
-    public ReadMoreTextView(Context context) {
-        this(context, null);
+    private var readMoreText: CharSequence? = null
+    private var bufferType: BufferType? = null
+    private var readMore = true
+    private var trimLength: Int
+    private var trimCollapsedText: CharSequence
+    private var trimExpandedText: CharSequence
+    private val viewMoreSpan: ReadMoreClickableSpan
+    private var colorClickableText: Int
+    private val showTrimExpandedText: Boolean
+    private var trimMode: Int
+    private var lineEndIndex = 0
+    private var trimLines: Int
+    private fun setText() {
+        super.setText(displayableText, bufferType)
+        movementMethod = LinkMovementMethod.getInstance()
+        highlightColor = Color.TRANSPARENT
     }
 
-    public ReadMoreTextView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ReadMoreTextView);
-        this.trimLength = typedArray.getInt(com.lovepreet.gallery.R.styleable.ReadMoreTextView_trimLength, DEFAULT_TRIM_LENGTH);
-        this.trimCollapsedText = "Show more";
-        this.trimExpandedText = "  Show less";
-        this.trimLines = typedArray.getInt(R.styleable.ReadMoreTextView_trimLines, DEFAULT_TRIM_LINES);
-        this.colorClickableText = typedArray.getColor(R.styleable.ReadMoreTextView_colorClickableText,
-                ContextCompat.getColor(context, R.color.mdtp_accent_color_focused));
-        this.showTrimExpandedText =
-                typedArray.getBoolean(R.styleable.ReadMoreTextView_showTrimExpandedText, DEFAULT_SHOW_TRIM_EXPANDED_TEXT);
-        this.trimMode = typedArray.getInt(R.styleable.ReadMoreTextView_trimMode, TRIM_MODE_LINES);
-        typedArray.recycle();
-        viewMoreSpan = new ReadMoreClickableSpan();
-        onGlobalLayoutLineEndIndex();
-        setText();
+    private val displayableText: CharSequence?
+        get() = getTrimmedText(readMoreText)
+
+    override fun setText(readMoreText: CharSequence, type: BufferType) {
+        this.readMoreText = readMoreText
+        bufferType = type
+        setText()
     }
 
-    private void setText() {
-        super.setText(getDisplayableText(), bufferType);
-        setMovementMethod(LinkMovementMethod.getInstance());
-        setHighlightColor(Color.TRANSPARENT);
-    }
-
-    private CharSequence getDisplayableText() {
-        return getTrimmedText(text);
-    }
-
-    @Override
-    public void setText(CharSequence text, BufferType type) {
-        this.text = text;
-        bufferType = type;
-        setText();
-    }
-
-    private CharSequence getTrimmedText(CharSequence text) {
+    private fun getTrimmedText(readMoreText: CharSequence?): CharSequence? {
         if (trimMode == TRIM_MODE_LENGTH) {
-            if (text != null && text.length() > trimLength) {
-                if (readMore) {
-                    return updateCollapsedText();
+            if (readMoreText != null && readMoreText.length > trimLength) {
+                return if (readMore) {
+                    updateCollapsedText()
                 } else {
-                    return updateExpandedText();
+                    updateExpandedText()
                 }
             }
         }
         if (trimMode == TRIM_MODE_LINES) {
-            if (text != null && lineEndIndex > 0) {
+            if (readMoreText != null && lineEndIndex > 0) {
                 if (readMore) {
-                    if (getLayout().getLineCount() > trimLines) {
-                        return updateCollapsedText();
+                    if (layout.lineCount > trimLines) {
+                        return updateCollapsedText()
                     }
                 } else {
-                    return updateExpandedText();
+                    return updateExpandedText()
                 }
             }
         }
-        return text;
+        return readMoreText
     }
 
-    private CharSequence updateCollapsedText() {
-        int trimEndIndex = text.length();
-        switch (trimMode) {
-            case TRIM_MODE_LINES:
-                trimEndIndex = lineEndIndex - (ELLIPSIZE.length() + trimCollapsedText.length() + 1);
+    private fun updateCollapsedText(): CharSequence {
+        var trimEndIndex = readMoreText!!.length
+        when (trimMode) {
+            TRIM_MODE_LINES -> {
+                trimEndIndex = lineEndIndex - (ELLIPSIZE.length + trimCollapsedText.length + 1)
                 if (trimEndIndex < 0) {
-                    trimEndIndex = trimLength + 1;
+                    trimEndIndex = trimLength + 1
                 }
-                break;
-            case TRIM_MODE_LENGTH:
-                trimEndIndex = trimLength + 1;
-                break;
-        }
-        SpannableStringBuilder s = new SpannableStringBuilder(text, 0, trimEndIndex)
-                .append(ELLIPSIZE)
-                .append(trimCollapsedText);
-        return addClickableSpan(s, trimCollapsedText);
-    }
-
-    private CharSequence updateExpandedText() {
-        if (showTrimExpandedText) {
-            SpannableStringBuilder s = new SpannableStringBuilder(text, 0, text.length()).append(trimExpandedText);
-            return addClickableSpan(s, trimExpandedText);
-        }
-        return text;
-    }
-
-    private CharSequence addClickableSpan(SpannableStringBuilder s, CharSequence trimText) {
-        s.setSpan(viewMoreSpan, s.length() - trimText.length(), s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return s;
-    }
-
-    public void setTrimLength(int trimLength) {
-        this.trimLength = trimLength;
-        setText();
-    }
-
-    public void setColorClickableText(int colorClickableText) {
-        this.colorClickableText = colorClickableText;
-    }
-
-    public void setTrimCollapsedText(CharSequence trimCollapsedText) {
-        this.trimCollapsedText = trimCollapsedText;
-    }
-
-    public void setTrimExpandedText(CharSequence trimExpandedText) {
-        this.trimExpandedText = trimExpandedText;
-    }
-
-    public void setTrimMode(int trimMode) {
-        this.trimMode = trimMode;
-    }
-
-    public void setTrimLines(int trimLines) {
-        this.trimLines = trimLines;
-    }
-
-    private class ReadMoreClickableSpan extends ClickableSpan {
-        @Override
-        public void onClick(View widget) {
-            readMore = !readMore;
-            setText();
-        }
-
-        @Override
-        public void updateDrawState(TextPaint ds) {
-            ds.setColor(colorClickableText);
-        }
-    }
-
-    private void onGlobalLayoutLineEndIndex() {
-        if (trimMode == TRIM_MODE_LINES) {
-            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    ViewTreeObserver obs = getViewTreeObserver();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        obs.removeOnGlobalLayoutListener(this);
-                    } else {
-                        obs.removeGlobalOnLayoutListener(this);
-                    }
-                    refreshLineEndIndex();
-                    setText();
-                }
-            });
-        }
-    }
-
-    private void refreshLineEndIndex() {
-        try {
-            if (trimLines == 0) {
-                lineEndIndex = getLayout().getLineEnd(0);
-            } else if (trimLines > 0 && getLineCount() >= trimLines) {
-                lineEndIndex = getLayout().getLineEnd(trimLines - 1);
-            } else {
-                lineEndIndex = INVALID_END_INDEX;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            TRIM_MODE_LENGTH -> trimEndIndex = trimLength + 1
         }
+        val s = SpannableStringBuilder(readMoreText, 0, trimEndIndex)
+            .append(ELLIPSIZE)
+            .append(trimCollapsedText)
+        return addClickableSpan(s, trimCollapsedText)
+    }
+
+    private fun updateExpandedText(): CharSequence? {
+        if (showTrimExpandedText) {
+            val s = SpannableStringBuilder(readMoreText, 0, readMoreText!!.length).append(trimExpandedText)
+            return addClickableSpan(s, trimExpandedText)
+        }
+        return readMoreText
+    }
+
+    private fun addClickableSpan(s: SpannableStringBuilder, trimText: CharSequence): CharSequence {
+        s.setSpan(
+            viewMoreSpan,
+            s.length - trimText.length,
+            s.length,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+        return s
+    }
+
+    fun setTrimLength(trimLength: Int) {
+        this.trimLength = trimLength
+        setText()
+    }
+
+    fun setColorClickableText(colorClickableText: Int) {
+        this.colorClickableText = colorClickableText
+    }
+
+    fun setTrimCollapsedText(trimCollapsedText: CharSequence) {
+        this.trimCollapsedText = trimCollapsedText
+    }
+
+    fun setTrimExpandedText(trimExpandedText: CharSequence) {
+        this.trimExpandedText = trimExpandedText
+    }
+
+    fun setTrimMode(trimMode: Int) {
+        this.trimMode = trimMode
+    }
+
+    fun setTrimLines(trimLines: Int) {
+        this.trimLines = trimLines
+    }
+
+    private inner class ReadMoreClickableSpan : ClickableSpan() {
+        override fun onClick(widget: View) {
+            readMore = !readMore
+            setText()
+        }
+
+        override fun updateDrawState(ds: TextPaint) {
+            ds.color = colorClickableText
+        }
+    }
+
+    private fun onGlobalLayoutLineEndIndex() {
+        if (trimMode == TRIM_MODE_LINES) {
+            viewTreeObserver.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val obs = viewTreeObserver
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        obs.removeOnGlobalLayoutListener(this)
+                    } else {
+                        obs.removeGlobalOnLayoutListener(this)
+                    }
+                    refreshLineEndIndex()
+                    setText()
+                }
+            })
+        }
+    }
+
+    private fun refreshLineEndIndex() {
+        try {
+            lineEndIndex = if (trimLines == 0) {
+                layout.getLineEnd(0)
+            } else if (trimLines > 0 && lineCount >= trimLines) {
+                layout.getLineEnd(trimLines - 1)
+            } else {
+                INVALID_END_INDEX
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    companion object {
+        private const val TRIM_MODE_LINES = 0
+        private const val TRIM_MODE_LENGTH = 1
+        private const val DEFAULT_TRIM_LENGTH = 240
+        private const val DEFAULT_TRIM_LINES = 2
+        private const val INVALID_END_INDEX = -1
+        private const val DEFAULT_SHOW_TRIM_EXPANDED_TEXT = true
+        private const val ELLIPSIZE = "... "
+    }
+
+    init {
+        val typedArray = context.obtainStyledAttributes(attrs, R.styleable.ReadMoreTextView)
+        trimLength = typedArray.getInt(R.styleable.ReadMoreTextView_trimLength, DEFAULT_TRIM_LENGTH)
+        trimCollapsedText = "Show more"
+        trimExpandedText = "  Show less"
+        trimLines = typedArray.getInt(R.styleable.ReadMoreTextView_trimLines, DEFAULT_TRIM_LINES)
+        colorClickableText = typedArray.getColor(
+            R.styleable.ReadMoreTextView_colorClickableText,
+            ContextCompat.getColor(context, R.color.mdtp_accent_color_focused)
+        )
+        showTrimExpandedText = typedArray.getBoolean(
+            R.styleable.ReadMoreTextView_showTrimExpandedText,
+            DEFAULT_SHOW_TRIM_EXPANDED_TEXT
+        )
+        trimMode = typedArray.getInt(R.styleable.ReadMoreTextView_trimMode, TRIM_MODE_LINES)
+        typedArray.recycle()
+        viewMoreSpan = ReadMoreClickableSpan()
+        onGlobalLayoutLineEndIndex()
+        setText()
     }
 }
-

@@ -46,8 +46,5 @@ class GalleryActivity : AppCompatActivity() {
                 showSnackbar(it.error)
             }
         }
-
-        viewModel.loadImagesInGallery()
-
     }
 }
